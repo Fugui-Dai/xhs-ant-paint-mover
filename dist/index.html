@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>蚂蚁搬画 · 森林野餐绘本</title>
+  <link rel="stylesheet" href="./assets/css/style.css" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <!-- 顶部 2D 简约功能栏（兼容胶囊避让与安全区） -->
+    <header id="top-bar" class="top-bar">
+      <div class="top-bar-inner">
+        <button id="btn-levels" class="pill-btn levels-btn" type="button" aria-label="选择关卡" title="选关">
+          <span aria-hidden="true">🗺️</span>
+          <span>选关</span>
+        </button>
+        <div class="title-cluster">
+          <h1 id="header-title" class="header-title">蚂蚁搬画 · 第 1 关</h1>
+          <p id="header-sub" class="header-sub">太阳煎蛋 · 早餐食光</p>
+        </div>
+        <div class="top-actions">
+          <button id="btn-gallery" class="pill-btn gallery-pill" type="button" aria-label="蚁巢画廊">
+            <canvas id="mini-canvas" class="mini-canvas" width="24" height="24"></canvas>
+            <span id="gallery-icon" aria-hidden="true" hidden>🖼️</span>
+            <span id="gallery-count-badge">0/360</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 选关视图（点击顶部“选关”进入） -->
+    <main id="screen-home" class="screen screen-home" hidden>
+      <section class="level-hub-bar">
+        <div class="hub-stats-row">
+          <span class="hub-chip">藏画 <strong id="stat-cleared">0 / 360</strong></span>
+          <span class="hub-chip">星星 <strong id="stat-stars">0 ★</strong></span>
+          <span class="hub-chip">无尽 <strong id="stat-endless">0</strong></span>
+        </div>
+        <div class="hub-btn-row">
+          <button id="btn-continue" class="primary-btn small-btn" type="button">
+            回到第 <span id="continue-level-num">1</span> 关
+          </button>
+          <button id="btn-endless" class="secondary-btn small-btn" type="button">
+            无尽挑战
+          </button>
+          <button id="btn-rank-home" class="secondary-btn small-btn" type="button">
+            🏆 榜单
+          </button>
+        </div>
+        <div id="cloud-sync-hint" class="cloud-sync-hint" hidden>☁️ 云存档已开启（同账号跨端同步）</div>
+      </section>
+
+      <section id="chapter-list" class="chapter-list" aria-label="主题章节与关卡列表"></section>
+    </main>
+
+    <!-- 核心游玩视图：开局直接进入（2D 森林草地画架 + 5暂存槽 + 2x4全可点小队阵） -->
+    <main id="screen-game" class="screen screen-game">
+      <!-- 紧凑进度条 + 节奏与音效控制 -->
+      <div class="hud-strip">
+        <span id="hud-chapter-tag" class="hud-tag">早餐食光</span>
+        <div class="progress-track">
+          <div id="hud-progress-fill" class="progress-fill"></div>
+        </div>
+        <span id="hud-remain-text" class="hud-remain">0 块</span>
+        <span id="hud-combo-badge" class="combo-badge is-hidden" aria-hidden="true">x<span id="hud-combo-num">1</span></span>
+        <button id="btn-speed" class="hud-mini-btn speed-btn" type="button" aria-label="切换速度">
+          <span id="speed-label">x1</span>
+        </button>
+        <button id="btn-rank" class="hud-mini-btn rank-btn" type="button" aria-label="排行榜" title="排行榜">🏆</button>
+        <button id="btn-sound" class="hud-mini-btn" type="button" aria-label="音效开关" title="音效">
+          <span id="sound-icon" aria-hidden="true">🔊</span>
+        </button>
+      </div>
+
+      <!-- 核心 2D 画布舞台（无悬浮遮挡） -->
+      <section class="stage-wrap" aria-label="2D 像素画与蚁丘舞台">
+        <canvas id="game-canvas" class="game-canvas"></canvas>
+        <div id="stage-tip" class="stage-tip" role="status">点击底部任意蚂蚁小队出征，注意不要堵满 5 个槽位</div>
+      </section>
+
+      <!-- 中部 5 个暂存槽 -->
+      <section class="dock-section" aria-label="蚁群暂存槽">
+        <div id="dock-slots" class="dock-slots"></div>
+      </section>
+
+      <!-- 底部全可点混合小队阵 (最多8个按钮同时可点，不锁死不剧透) -->
+      <section class="supply-section" aria-label="待命蚁群阵">
+        <div class="supply-meta">
+          <span class="supply-title">待命蚁群（全部可点）</span>
+          <span id="supply-reserve-text" class="supply-reserve">后续还有 0 队</span>
+        </div>
+        <div id="supply-grid" class="supply-grid"></div>
+        <div class="tools-bar">
+          <button id="tool-undo" class="tool-btn" type="button">
+            <span class="tool-icon" aria-hidden="true">↩️</span>
+            <span class="tool-name">撤回</span>
+            <span id="tool-undo-count" class="tool-badge">3</span>
+          </button>
+          <button id="tool-slot" class="tool-btn" type="button">
+            <span class="tool-icon" aria-hidden="true">➕</span>
+            <span class="tool-name">扩槽</span>
+            <span id="tool-slot-count" class="tool-badge">2</span>
+          </button>
+          <button id="tool-rainbow" class="tool-btn" type="button">
+            <span class="tool-icon" aria-hidden="true">🌈</span>
+            <span class="tool-name">彩虹蚁</span>
+            <span id="tool-rainbow-count" class="tool-badge">2</span>
+          </button>
+          <button id="tool-restart" class="tool-btn tool-btn-subtle" type="button">
+            <span class="tool-icon" aria-hidden="true">🔄</span>
+            <span class="tool-name">重开</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- 蚁巢画廊视图 -->
+    <main id="screen-gallery" class="screen screen-gallery" hidden>
+      <div class="gallery-header">
+        <div>
+          <h2 class="gallery-title">蚁巢藏画廊</h2>
+          <p class="gallery-sub">每一幅搬运完成的画作，都珍藏在森林地下画室</p>
+        </div>
+        <button id="btn-gallery-back" class="secondary-btn small-btn" type="button">返回</button>
+      </div>
+      <div id="gallery-grid" class="gallery-chapters"></div>
+    </main>
+
+    <!-- 弹窗：过关 / 失败 / 画作海报 -->
+    <div id="modal-backdrop" class="modal-backdrop" hidden>
+      <div id="modal-card" class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div id="modal-stars" class="modal-stars" hidden>★★★</div>
+        <h3 id="modal-title" class="modal-title">搬画完成！</h3>
+        <p id="modal-desc" class="modal-desc"></p>
+        <div id="modal-preview-wrap" class="modal-preview-wrap" hidden>
+          <canvas id="poster-canvas" class="poster-canvas" width="420" height="520"></canvas>
+        </div>
+        <div id="modal-rank-wrap" class="modal-rank-wrap" hidden>
+          <div id="rank-board-tabs" class="rank-tabs">
+            <button type="button" class="rank-tab is-active" data-rank-board="1">⭐ 累计集星榜</button>
+            <button type="button" class="rank-tab" data-rank-board="2">♾️ 无尽挑战榜</button>
+          </div>
+          <div id="rank-period-tabs" class="rank-period-tabs">
+            <button type="button" class="rank-period-btn is-active" data-rank-period="all">总榜</button>
+            <button type="button" class="rank-period-btn" data-rank-period="month">月榜</button>
+            <button type="button" class="rank-period-btn" data-rank-period="week">周榜</button>
+            <button type="button" class="rank-period-btn" data-rank-period="day">日榜</button>
+          </div>
+          <div id="rank-my-banner" class="rank-my-banner"></div>
+          <div id="rank-list" class="rank-list"></div>
+        </div>
+        <div id="modal-actions" class="modal-actions"></div>
+      </div>
+    </div>
+
+    <!-- 轻提示 Toast -->
+    <div id="toast" class="toast" role="status" hidden></div>
+  </div>
+
+  <script defer src="./assets/js/compat.js"></script>
+  <script defer src="./assets/js/audio.js"></script>
+  <script defer src="./assets/js/levels.js"></script>
+  <script defer src="./assets/js/engine.js"></script>
+  <script defer src="./assets/js/renderer.js"></script>
+  <script defer src="./assets/js/app.js"></script>
+</body>
+</html>

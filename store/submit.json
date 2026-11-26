@@ -1,0 +1,11 @@
+{
+  "appName": "蚂蚁搬画",
+  "slogan": "看小蚂蚁排队把像素画搬回家",
+  "iconFileId": "red_skill_tool_image/KI3BbGQdkDQlY_Rf3IPIArxPsehKS4jeaGZInni0n8u2JFI.jpg",
+  "coverFileId": "red_skill_tool_image/KDl73dMoBJU3OYHyfwIvDWxbFnzBnsmk9879hxFEXIOyaAA.jpg",
+  "version": "1.0.0",
+  "pkgFileId": "red_app/A1VqzttKgqPeOov4blo1qH4yfMiIDrJaNIKZDsKw-dJpkY8.zip",
+  "md5": "12f89bb3ef2dd0b49ee95d01c914105b",
+  "categories": ["casual_game"],
+  "authorizations": ["photos", "apiCloudStore"]
+}
