@@ -3,18 +3,18 @@
   'use strict';
 
   var PALETTE = {
-    'B': { name: '晴空蓝', hex: '#6fc3df', dark: '#4898b4', ant: '#56b2d1' },
-    'W': { name: '奶霜白', hex: '#fff8ea', dark: '#d6c8ab', ant: '#ebe1cc' },
-    'Y': { name: '蛋黄金', hex: '#f8cb46', dark: '#ca9818', ant: '#ecb92a' },
-    'O': { name: '焦糖橙', hex: '#f08334', dark: '#bd5712', ant: '#e47221' },
-    'K': { name: '可可棕', hex: '#5b4234', dark: '#362318', ant: '#6d5040' },
-    'R': { name: '草莓红', hex: '#eb5858', dark: '#b83131', ant: '#dc4545' },
-    'P': { name: '樱花粉', hex: '#f490b3', dark: '#c45e83', ant: '#e6769d' },
-    'G': { name: '嫩叶绿', hex: '#67be62', dark: '#408e3d', ant: '#55ac51' },
-    'D': { name: '森林绿', hex: '#33814e', dark: '#1d5731', ant: '#2c7144' },
-    'V': { name: '葡萄紫', hex: '#997ad0', dark: '#694aa1', ant: '#8565bd' },
-    'N': { name: '深海蓝', hex: '#3a609e', dark: '#213c6b', ant: '#30528a' },
-    'T': { name: '浅卡其', hex: '#dab57f', dark: '#ab844f', ant: '#c79f68' }
+    'B': { name: '海盐冰蓝', hex: '#38bdf8', hi: '#bae6fd', dark: '#0284c7', ant: '#29aae3' },
+    'W': { name: '炼乳奶白', hex: '#fff8ec', hi: '#ffffff', dark: '#dec9a4', ant: '#efe2cb' },
+    'Y': { name: '芒果布丁', hex: '#ffd233', hi: '#fff4a3', dark: '#d98a00', ant: '#f5b818' },
+    'O': { name: '蜜橘汽水', hex: '#ff7b2e', hi: '#ffc59c', dark: '#c94609', ant: '#f0671e' },
+    'K': { name: '生巧可可', hex: '#714433', hi: '#a36b55', dark: '#452418', ant: '#855340' },
+    'R': { name: '宝石草莓', hex: '#ff476c', hi: '#ffb3c3', dark: '#bf1742', ant: '#ee335a' },
+    'P': { name: '蜜桃樱粉', hex: '#ff85c0', hi: '#ffd6eb', dark: '#cf347f', ant: '#f26bae' },
+    'G': { name: '奇异果青', hex: '#4ade80', hi: '#bcf7d0', dark: '#159947', ant: '#32c76a' },
+    'D': { name: '薄荷翡翠', hex: '#14b8a6', hi: '#99f6e4', dark: '#0d7369', ant: '#109c8d' },
+    'V': { name: '香芋葡萄', hex: '#a855f7', hi: '#ead5ff', dark: '#7521c4', ant: '#9442e3' },
+    'N': { name: '星空矢车菊', hex: '#526ef8', hi: '#c7d2fe', dark: '#2d41b8', ant: '#405ae0' },
+    'T': { name: '黄油太妃', hex: '#f5b762', hi: '#fee4b8', dark: '#bd7621', ant: '#e09d46' }
   };
 
   var CHAPTERS = [
@@ -34,17 +34,15 @@
     { id: 14, name: '四季与天气', desc: '日月中雨雪 · 气象图鉴', badge: '261-280关' },
     { id: 15, name: '几何建筑师', desc: '宝塔金字塔 · 螺旋迷阵', badge: '281-300关' },
     { id: 16, name: '万圣奇幻夜', desc: '星夜主题 · 幽灵南瓜夜', badge: '301-320关' },
-    { id: 17, name: '星际漫游', desc: '14x14 大画幅 · 宇宙奇观', badge: '321-340关' },
+    { id: 17, name: '星际漫游', desc: '26x26 超大画幅 · 宇宙奇观', badge: '321-340关' },
     { id: 18, name: '蚁后皇家殿堂', desc: '全机关融合 · 终极殿堂', badge: '341-360关' }
   ];
 
   /* 95+ 独立异形轮廓像素模板 */
   var SHAPES = {
-    miniegg: ['............', '....WWWW....', '...WWWWWW...', '..WWYYYYWW..', '..WWYYYYWW..', '..WWYYYYWW..', '..WWWWWWWW..', '...WWWWWW...', '....TTTT....', '............', '............', '............'],
-    miniheart: ['............', '..RRR..RRR..', '.RRPRRRRPRR.', '.RPWRRRRPRR.', '..RRRRRRRR..', '...RRRRRR...', '....PPPP....', '.....PP.....', '............', '............', '............', '............'],
-    egg: ['....KKKK....', '..KKWWWWKK..', '.KWWWWWWWWK.', 'KWWWYYYYWWWK', 'KWWYYYYYYWWK', 'KWWYYYYOOWWK', 'KWWYYYYOOWWK', '.KWWYYYYWWK.', '.KWWWWWWWWK.', '..KKWWWWKK..', '....KKKK....', '............'],
-    heart: ['.RRR....RRR.', 'RRRRR..RRRRR', 'RWWWRRRRRRRR', 'RWWRRRRRRRRR', 'RRRRRRRRRRRR', '.RRRRRRRRRR.', '..RRRRRRRR..', '...RRRRRR...', '....RRRR....', '.....RR.....', '............', '............'],
-    strawberry: ['....GGGG....', '..GGGGGGGG..', '..RRRRRRRR..', '.RRYRRRRRYR.', '.RRRRRRRRRR.', '.RYRRRRRRYR.', '..RRRRRRRR..', '..RRYRRRYR..', '...RRRRRR...', '....RRRR....', '.....RR.....', '............'],
+    egg: ['....KKKK....', '..KKWWWWKK..', '.KWWWWWWWWK.', 'KWWWYYYYWWWK', 'KWWYYOYYYWWK', 'KWWYYOOOYWWK', 'KWWYYOOOYWWK', '.KWWYYYYWWK.', '.KWWPPPPWWK.', '..KKWWWWKK..', '....KKKK....', '............'],
+    heart: ['.PPP....PPP.', 'PRRRP..PRRRP', 'PWWRRRRRYYRP', 'PWWORRRRRRRP', 'PRRROORRRVVP', '.PRRRRRRVVP.', '..PRRRRVVP..', '...PRRVVP...', '....PRVP....', '.....PP.....', '............', '............'],
+    strawberry: ['....G..G....', '..GGGGGGGG..', '..PPRRRRPP..', '.RRYRRRRRYR.', '.RRRRRRRRRR.', '.RYRPPPRRYR.', '..RRRRRRRR..', '..VVYRRRYVV.', '...VVRRVV...', '....VVVV....', '.....RR.....', '............'],
     icecream: ['....PPPP....', '...PPPPPP...', '..PPPPPPPP..', '..PPWPPWPP..', '..PPPPPPPP..', '...TTTTTT...', '...TKTKTK...', '....TTTT....', '....TKTK....', '.....TT.....', '.....TT.....', '............'],
     burger: ['...TTTTTT...', '..TTWTTWTT..', '.TTTTTTTTTT.', '.GGGGGGGGGG.', '.YYYYYYYYYY.', '.KKKKKKKKKK.', '..RRRRRRRR..', '..TTTTTTTT..', '...TTTTTT...', '............', '............', '............'],
     donut: ['...PPPPPP...', '..PPYPPWPP..', '.PPPWPPPYPP.', '.PPPKKKKPPP.', 'TTTPK..KPTTT', 'TTTPKKKKPTTT', 'TTTTTTTTTTTT', '.TTTTTTTTTT.', '..TTTTTTTT..', '...TTTTTT...', '............', '............'],
@@ -252,18 +250,35 @@
     return art;
   }
 
-  /* 将 12×12 图形优雅放大/嵌框为 14×14（用于第17-18章大画幅） */
-  function padTo14(art12) {
-    var out = ['..............'];
-    for (var r = 0; r < art12.length; r += 1) {
-      out.push('.' + art12[r] + '.');
+  /* 将小尺寸模板精确重采样放大到 targetSize x targetSize（12->18 / 12->24） */
+  function resampleArt(art, targetSize) {
+    var srcRows = art.length;
+    var srcCols = art[0].length;
+    if (srcRows === targetSize && srcCols === targetSize) return art;
+    var out = [];
+    for (var r = 0; r < targetSize; r += 1) {
+      var sr = Math.min(srcRows - 1, Math.floor((r * srcRows) / targetSize));
+      var rowStr = '';
+      for (var c = 0; c < targetSize; c += 1) {
+        var sc = Math.min(srcCols - 1, Math.floor((c * srcCols) / targetSize));
+        rowStr += art[sr][sc];
+      }
+      out.push(rowStr);
     }
-    out.push('..............');
     return out;
   }
 
+  function getTargetGridSize(levelId) {
+    if (!levelId || levelId <= 1) return 10;
+    if (levelId <= 2) return 12;
+    if (levelId <= 4) return 14;
+    if (levelId <= 8) return 16;
+    if (levelId <= 20) return 20;
+    if (levelId <= 260) return 24;
+    return 26;
+  }
+
   /* 18章结构化配置生成器（共 360 关，题材与图形丰富多变、波浪难度曲线） */
-  var SHAPE_KEYS = Object.keys(SHAPES);
   var REMAP_SETS = [
     null,
     { R: 'P', O: 'Y', B: 'G' },
@@ -276,7 +291,7 @@
   var CHAPTER_THEMES = [
     /* Ch1: 街头小吃街 */
     [
-      ['太阳煎蛋', 'miniegg'], ['草莓红心', 'miniheart'], ['Mini汉堡', 'burger'], ['粉霜甜甜圈', 'donut'],
+      ['太阳煎蛋', 'egg'], ['草莓奶盖心', 'heart'], ['Mini汉堡', 'burger'], ['粉霜甜甜圈', 'donut'],
       ['鲜甜草莓·挑战', 'strawberry'], ['清凉西瓜角', 'watermelon'], ['脆香薯条', 'fries'], ['黄金披萨角', 'pizza'],
       ['热狗三明治', 'hotdog'], ['珍珠奶茶·挑战', 'boba'], ['三文鱼寿司', 'sushi'], ['酥香牛角包', 'croissant'],
       ['鲜切牛油果', 'avocado'], ['黄金大菠萝', 'pineapple'], ['暖心拉面·挑战', 'ramen'], ['小肉粽饭团', 'onigiri'],
@@ -429,14 +444,16 @@
       var tuple = items[lvIdx];
       var lvInCh = lvIdx + 1;
       var isSpike = (lvInCh % 5 === 0);
+      var levelNum = chIdx * 20 + lvInCh;
+      var targetSize = getTargetGridSize(levelNum);
       var spec = {
         name: tuple[0],
         chapter: chNum,
-        large: chNum >= 17
+        gridSize: targetSize
       };
       var motifOrGeo = tuple[1];
       if (tuple[2]) {
-        spec.geo = [motifOrGeo, chNum >= 17 ? 14 : 12, tuple[2].split(',')];
+        spec.geo = [motifOrGeo, targetSize, tuple[2].split(',')];
       } else {
         spec.motif = motifOrGeo;
         /* 给同名母版分配差异化配色变奏 */
@@ -444,8 +461,13 @@
         if (lvIdx > 5 && remapPick) spec.remap = remapPick;
       }
 
-      /* 章节渐进机制 + 波浪难度 */
-      if (chNum === 1 && isSpike) spec.doubleRate = 0.08;
+      /* 章节渐进机制 + 平滑新手坡道（第 1~2 关纯基础色无机关，第 3 关起轻度引入机关） */
+      if (chNum === 1) {
+        if (lvInCh === 3) spec.doubleRate = 0.08;
+        if (lvInCh === 4) { spec.doubleRate = 0.08; spec.wrapRate = 0.10; }
+        if (lvInCh === 7) { spec.mudRate = 0.10; spec.allowBomber = true; }
+        if (isSpike) { spec.doubleRate = 0.12; spec.wrapRate = 0.10; spec.allowBomber = true; }
+      }
       if (chNum >= 2) spec.doubleRate = Math.min(0.26, 0.1 + chNum * 0.008 + (isSpike ? 0.06 : 0));
       if (chNum >= 4 && chNum <= 5) spec.mudRate = 0.14 + (isSpike ? 0.08 : 0);
       if (chNum === 6 || chNum === 11 || chNum === 18) {
@@ -460,14 +482,6 @@
 
       LEVEL_SPECS.push(spec);
     }
-  }
-
-  function createRng(seed) {
-    var s = (seed >>> 0) || 1;
-    return function () {
-      s = (s * 1664525 + 1013904223) >>> 0;
-      return s / 4294967296;
-    };
   }
 
   /* 把异形剪影在网格内水平+垂直居中，消除扁平图案下方大片留白 */
@@ -504,11 +518,12 @@
   }
 
   function resolveArt(spec, seed) {
+    var targetSize = spec.gridSize || 12;
     if (spec.geo) {
-      return centerArt(buildParametricArt(spec.geo[0], spec.geo[1], spec.geo[2], seed));
+      return centerArt(buildParametricArt(spec.geo[0], targetSize, spec.geo[2], seed));
     }
     var baseArt = centerArt(SHAPES[spec.motif] || SHAPES.egg);
-    return spec.large ? padTo14(baseArt) : baseArt;
+    return targetSize !== 12 ? centerArt(resampleArt(baseArt, targetSize)) : baseArt;
   }
 
   function buildGridFromSpec(spec, levelId) {
@@ -532,11 +547,11 @@
         row.push({
           color: ch,
           layers: 1,
-          maxLayers: 1,
           mud: false,
           wrapped: false,
           key: false,
           locked: false,
+          special: null,
           origColor: ch
         });
       }
@@ -551,7 +566,6 @@
         if (!hasFourNeighbors) continue;
         if (spec.doubleRate && rng() < spec.doubleRate) {
           cell.layers = 2;
-          cell.maxLayers = 2;
         }
         if (spec.mudRate && cell.layers === 1 && rng() < spec.mudRate) {
           cell.mud = true;
@@ -626,6 +640,64 @@
           if (spec.mudRate) ec.mud = true;
           else if (spec.wrapRate) ec.wrapped = true;
         }
+      }
+    }
+
+    /* 从第 2 关起在非障碍彩色像素上随机放置 1~2 枚「⚡十字电弧」或「🍯甜蜜花蜜」，震碎大片障碍且严格保持守恒 */
+    if (levelId >= 2) {
+      var spCandidates = [];
+      for (r = 1; r < rows - 1; r += 1) {
+        for (c = 1; c < cols - 1; c += 1) {
+          var sc = grid[r][c];
+          if (sc && sc.layers === 1 && !sc.mud && !sc.wrapped && !sc.key && !sc.locked) {
+            spCandidates.push(sc);
+          }
+        }
+      }
+      if (spCandidates.length >= 2) {
+        var spIdx1 = Math.floor(rng() * spCandidates.length);
+        spCandidates[spIdx1].special = (levelId % 2 === 0) ? 'honey' : 'bolt';
+        if (levelId >= 6 && spCandidates.length >= 6) {
+          var spIdx2 = (spIdx1 + Math.floor(spCandidates.length * 0.45)) % spCandidates.length;
+          if (spIdx2 !== spIdx1) {
+            spCandidates[spIdx2].special = (levelId % 2 === 0) ? 'bolt' : 'honey';
+          }
+        }
+      }
+    }
+
+    /* 自检所有泥壳/礼盒/金锁均可从外周剥离达底；细枝孤岛若被纯障碍锁死，则解开最外缘死锁保证 100% 守恒 */
+    var reachSim = cloneSimGrid(grid);
+    var reachGuard = 0;
+    while (countRemainingCarries(reachSim) > 0 && reachGuard < 120) {
+      reachGuard += 1;
+      var reachExp = findExposedCells(reachSim);
+      if (reachExp.length === 0) {
+        var clearedAnyObstacle = false;
+        for (r = 0; r < rows; r += 1) {
+          for (c = 0; c < cols; c += 1) {
+            var rCell = reachSim[r][c];
+            if (!rCell || (!rCell.mud && !rCell.wrapped && !rCell.locked)) continue;
+            var touchesAir = (r === 0 || r === rows - 1 || c === 0 || c === cols - 1 ||
+              !reachSim[r - 1][c] || !reachSim[r + 1][c] || !reachSim[r][c - 1] || !reachSim[r][c + 1]);
+            if (touchesAir) {
+              if (rCell.mud) { rCell.mud = false; grid[r][c].mud = false; clearedAnyObstacle = true; }
+              if (rCell.wrapped) { rCell.wrapped = false; grid[r][c].wrapped = false; clearedAnyObstacle = true; }
+              if (rCell.locked) { rCell.locked = false; grid[r][c].locked = false; clearedAnyObstacle = true; }
+            }
+          }
+        }
+        if (!clearedAnyObstacle) break;
+        continue;
+      }
+      for (var re = 0; re < reachExp.length; re += 1) {
+        var rp = reachExp[re];
+        var rgCell = reachSim[rp.r][rp.c];
+        if (!rgCell) continue;
+        var wasKey = rgCell.key;
+        reachSim[rp.r][rp.c] = null;
+        if (wasKey) unlockSimLocks(reachSim);
+        crackAdjacentSimObstacles(reachSim, rp.r, rp.c);
       }
     }
 
@@ -777,16 +849,35 @@
     return total;
   }
 
-  function generateSolvablePool(grid, mysteryRate, seed, allowBomber, levelId) {
+  function generateSolvablePool(grid, mysteryRate, seed, allowBomber, levelId, baseSlots) {
     var simGrid = cloneSimGrid(grid);
     var rng = createRng(seed);
     var dock = [];
     var sequence = [];
     var guard = 0;
     var lv = levelId || 1;
-    var tier = lv <= 5 ? 0 : (lv <= 30 ? 1 : 2);
+    var tier = lv <= 5 ? 0 : (lv <= 40 ? 1 : 2);
+    var maxSimDock = Math.max(2, (baseSlots || 4) - 1);
 
-    while (countRemainingCarries(simGrid) > 0 && guard < 450) {
+    function countColorNeed(g, color) {
+      var need = 0;
+      for (var rr = 0; rr < g.length; rr += 1) {
+        for (var cc = 0; cc < g[rr].length; cc += 1) {
+          if (g[rr][cc] && g[rr][cc].color === color) need += g[rr][cc].layers;
+        }
+      }
+      return need;
+    }
+
+    function countPendingDock(dk, color) {
+      var pend = 0;
+      for (var dd = 0; dd < dk.length; dd += 1) {
+        if (dk[dd].color === color) pend += dk[dd].count;
+      }
+      return pend;
+    }
+
+    while (countRemainingCarries(simGrid) > 0 && guard < 800) {
       guard += 1;
       var exposed = findExposedCells(simGrid);
       if (exposed.length === 0) break;
@@ -808,53 +899,57 @@
         if (keyColors[a] !== keyColors[b]) return keyColors[a] ? -1 : 1;
         return colorCounts[b] - colorCounts[a];
       });
-      var pickIdx = (exposedColors.length > 1 && !keyColors[exposedColors[0]] && rng() < 0.35) ? 1 : 0;
+      var pickIdx = (exposedColors.length > 1 && !keyColors[exposedColors[0]] && rng() < 0.32) ? 1 : 0;
       var chosenColor = exposedColors[pickIdx];
       var directAvail = colorCounts[chosenColor];
+      var maxAllowed = Math.max(1, countColorNeed(simGrid, chosenColor) - countPendingDock(dock, chosenColor));
+      var squadCap = 24;
       var squadSize;
 
       if (tier === 0) {
-        if (dock.length >= 2) {
-          squadSize = Math.min(directAvail, 3 + Math.floor(rng() * 5));
+        if (dock.length >= 3) {
+          squadSize = Math.min(maxAllowed, squadCap, directAvail);
         } else {
-          var totalColorNeed0 = 0;
-          for (var r0 = 0; r0 < simGrid.length; r0 += 1) {
-            for (var c00 = 0; c00 < simGrid[r0].length; c00 += 1) {
-              if (simGrid[r0][c00] && simGrid[r0][c00].color === chosenColor) {
-                totalColorNeed0 += simGrid[r0][c00].layers;
-              }
-            }
-          }
-          var targetBatch0 = Math.min(totalColorNeed0, directAvail + Math.floor(rng() * 3));
-          squadSize = Math.max(1, Math.min(targetBatch0, 10));
+          var targetBatch0 = Math.min(maxAllowed, squadCap, Math.max(Math.min(directAvail, squadCap), 10 + Math.floor(rng() * 8)));
+          squadSize = Math.max(1, Math.min(targetBatch0, 18));
         }
       } else {
-        /* 策略期拆小每队携块量，提高槽位与颜色规划密度 */
-        var maxSq = tier === 1 ? 5 : 4;
-        var minSq = tier === 1 ? 3 : 2;
-        squadSize = Math.max(1, Math.min(directAvail, minSq + Math.floor(rng() * (maxSq - minSq + 1))));
+        /* 大兵团爽快节奏：单队封顶 24 只，超额自动拆队防卡槽 */
+        var minSq = tier === 1 ? 10 : 12;
+        var maxSq = tier === 1 ? 18 : 24;
+        var desired = minSq + Math.floor(rng() * (maxSq - minSq + 1));
+        squadSize = Math.max(1, Math.min(maxAllowed, squadCap, Math.max(Math.min(directAvail, squadCap), desired)));
       }
 
-      var testGrid = cloneSimGrid(simGrid);
-      var testDock = [];
-      for (var d = 0; d < dock.length; d += 1) {
-        testDock.push({ color: dock[d].color, count: dock[d].count });
-      }
-      testDock.push({ color: chosenColor, count: squadSize });
-      runSimDock(testGrid, testDock);
-      if (testDock.length > 3) {
-        squadSize = tier === 0 ? directAvail : Math.max(1, Math.min(directAvail, tier === 1 ? 4 : 3));
-        testGrid = cloneSimGrid(simGrid);
-        testDock = [];
-        for (var d2 = 0; d2 < dock.length; d2 += 1) {
-          testDock.push({ color: dock[d2].color, count: dock[d2].count });
+      function trySimStep(sz) {
+        var tg = cloneSimGrid(simGrid);
+        var td = [];
+        for (var d = 0; d < dock.length; d += 1) {
+          td.push({ color: dock[d].color, count: dock[d].count });
         }
-        testDock.push({ color: chosenColor, count: squadSize });
-        runSimDock(testGrid, testDock);
+        td.push({ color: chosenColor, count: sz });
+        runSimDock(tg, td);
+        return { grid: tg, dock: td };
       }
 
-      simGrid = testGrid;
-      dock = testDock;
+      var simRes = trySimStep(squadSize);
+      if (simRes.dock.length > maxSimDock && tier > 0) {
+        var midSq = Math.min(squadCap, Math.max(Math.min(directAvail, squadCap), Math.min(maxAllowed, Math.floor((tier === 1 ? 10 : 12)))));
+        if (midSq < squadSize) {
+          simRes = trySimStep(midSq);
+          squadSize = midSq;
+        }
+        if (simRes.dock.length > maxSimDock) {
+          squadSize = Math.max(1, Math.min(maxAllowed, squadCap, directAvail));
+          simRes = trySimStep(squadSize);
+        }
+      } else if (simRes.dock.length > maxSimDock) {
+        squadSize = Math.max(1, Math.min(maxAllowed, squadCap, directAvail));
+        simRes = trySimStep(squadSize);
+      }
+
+      simGrid = simRes.grid;
+      dock = simRes.dock;
       sequence.push({
         color: chosenColor,
         count: squadSize,
@@ -864,7 +959,7 @@
     }
 
     var safety = 0;
-    while ((countRemainingCarries(simGrid) > 0 || dock.length > 0) && safety < 100) {
+    while (countRemainingCarries(simGrid) > 0 && safety < 200) {
       safety += 1;
       var remExp = findExposedCells(simGrid);
       if (remExp.length === 0) break;
@@ -873,7 +968,8 @@
       for (var x = 0; x < remExp.length; x += 1) {
         if (remExp[x].cell.color === c0) cnt += 1;
       }
-      if (tier > 0) cnt = Math.max(1, Math.min(cnt, tier === 1 ? 5 : 4));
+      var maxAllow0 = Math.max(1, countColorNeed(simGrid, c0) - countPendingDock(dock, c0));
+      cnt = Math.max(1, Math.min(maxAllow0, 24, cnt));
       dock.push({ color: c0, count: cnt });
       runSimDock(simGrid, dock);
       sequence.push({
@@ -903,15 +999,14 @@
       visiblePool = sequence.slice(0, visibleCount);
       reserveDeck = sequence.slice(visibleCount);
     } else {
-      /* 策略难度设计：初期仅留 2-4 支外围起手队，其余槽位混入深层内芯颜色，乱点极易堵满槽位 */
+      /* 策略与爽感平衡：开局留 3-4 支外围起手队，其余槽位混入中后段色块 */
       var initExp = findExposedCells(grid);
       var initExpColors = {};
       for (var ie = 0; ie < initExp.length; ie += 1) {
         initExpColors[initExp[ie].cell.color] = true;
       }
 
-      var openerNeed = tier === 1 ? 3 : (sequence.length >= 14 ? 1 : 2);
-      var decoyTarget = visibleCount - openerNeed;
+      var openerNeed = tier === 1 ? 4 : 3;
       var usedIndices = {};
       visiblePool = [];
       for (var oi = 0; oi < openerNeed && oi < sequence.length; oi += 1) {
@@ -920,7 +1015,7 @@
       }
 
       /* 先从后半段优先抽取开局未外露的颜色作为诱饵，再补普通后置队伍 */
-      var startSearch = Math.max(openerNeed, Math.floor(sequence.length * 0.42));
+      var startSearch = Math.max(openerNeed, Math.floor(sequence.length * 0.4));
       for (var pass = 0; pass < 2 && visiblePool.length < visibleCount; pass += 1) {
         for (var di = sequence.length - 1; di >= startSearch && visiblePool.length < visibleCount; di -= 1) {
           if (usedIndices[di]) continue;
@@ -957,28 +1052,50 @@
     };
   }
 
-  function getLevelConfig(levelId) {
+  function getLevelConfig(levelId, options) {
     var idx = Math.max(0, Math.min(LEVEL_SPECS.length - 1, (levelId || 1) - 1));
     var id = idx + 1;
-    var spec = LEVEL_SPECS[idx];
+    var hardMode = !!(options && options.hardMode);
+    var rawSpec = LEVEL_SPECS[idx];
+    var spec = rawSpec;
+    if (hardMode) {
+      spec = {
+        name: rawSpec.name,
+        chapter: rawSpec.chapter,
+        gridSize: rawSpec.gridSize,
+        motif: rawSpec.motif,
+        geo: rawSpec.geo,
+        remap: rawSpec.remap,
+        doubleRate: Math.max(rawSpec.doubleRate || 0, 0.14),
+        mudRate: rawSpec.mudRate || (!rawSpec.wrapRate && id >= 2 ? 0.08 : 0),
+        wrapRate: rawSpec.wrapRate || 0,
+        hasKey: rawSpec.hasKey,
+        lockRate: rawSpec.lockRate,
+        mysteryRate: Math.min(0.26, (rawSpec.mysteryRate || 0) + (id >= 4 ? 0.08 : 0)),
+        nightTheme: rawSpec.nightTheme,
+        allowBomber: rawSpec.allowBomber || id >= 3
+      };
+    }
     var chapter = spec.chapter;
     var grid = buildGridFromSpec(spec, id);
+    var baseSlots = hardMode ? 4 : 5;
     var poolData = generateSolvablePool(
       grid,
       spec.mysteryRate || 0,
-      id * 4099 + 17,
+      id * 4099 + 17 + (hardMode ? 911 : 0),
       !!spec.allowBomber,
-      id
+      id,
+      baseSlots
     );
     var chapterInfo = CHAPTERS[chapter - 1] || CHAPTERS[0];
-    var baseSlots = id <= 5 ? 5 : ((id <= 40 && id % 5 !== 0) ? 4 : 3);
-    if (id > 5 && id < 10 && id % 5 === 0) baseSlots = 4;
     return {
       id: id,
       chapter: chapter,
       chapterName: chapterInfo.name,
       name: spec.name,
       nightTheme: !!spec.nightTheme,
+      isHard: hardMode,
+      scratchMotif: getScratchMotif(chapter, id),
       rows: grid.length,
       cols: grid[0].length,
       grid: grid,
@@ -1021,9 +1138,9 @@
     };
   }
 
-  function getEndlessConfig(stageNum) {
+  function getEndlessConfig(stageNum, options) {
     var variants = ['diamondRing', 'crossMandala', 'flowerMandala', 'hexCrest', 'chevronWave', 'rose', 'spiral', 'symMonster'];
-    var size = stageNum % 2 === 1 ? 12 : 14;
+    var size = stageNum === 1 ? 22 : (stageNum <= 4 ? 24 : 26);
     var rng = createRng(stageNum * 131071 + 919);
     var colorKeys = Object.keys(PALETTE);
     var palettePick = [];
@@ -1033,6 +1150,7 @@
     }
     var spec = {
       name: '无尽秘境 #' + stageNum,
+      gridSize: size,
       geo: [variants[stageNum % variants.length], size, palettePick],
       doubleRate: Math.min(0.24, 0.08 + stageNum * 0.02),
       mudRate: Math.min(0.2, 0.06 + stageNum * 0.02),
@@ -1044,7 +1162,9 @@
       allowBomber: true
     };
     var grid = buildGridFromSpec(spec, 1000 + stageNum);
-    var poolData = generateSolvablePool(grid, spec.mysteryRate, (1000 + stageNum) * 7919, true, 1000 + stageNum);
+    var hardMode = !!(options && options.hardMode);
+    var baseSlots = hardMode ? 4 : 5;
+    var poolData = generateSolvablePool(grid, spec.mysteryRate, (1000 + stageNum) * 7919, true, 1000 + stageNum, baseSlots);
     return {
       id: 1000 + stageNum,
       endlessStage: stageNum,
@@ -1052,19 +1172,279 @@
       chapterName: '无尽挑战',
       name: spec.name,
       nightTheme: spec.nightTheme,
+      isHard: hardMode,
+      scratchMotif: getScratchMotif(18, stageNum),
       rows: grid.length,
       cols: grid[0].length,
       grid: grid,
       visiblePool: poolData.visiblePool,
       reserveDeck: poolData.reserveDeck,
-      baseSlots: 3,
+      baseSlots: baseSlots,
       isEndless: true
     };
+  }
+
+  var ANT_SKINS = [
+    { id: 'classic', name: '森林工蚁', desc: '勤劳质朴的原木探路小工蚁', reqStars: 0 },
+    { id: 'strawhat', name: '草帽野餐蚁', desc: '戴红丝带太阳草帽去草地搬画', reqStars: 15 },
+    { id: 'bee', name: '蜜蜂条纹蚁', desc: '金黑条纹背甲配俏皮小薄翅', reqStars: 45 },
+    { id: 'glow', name: '星夜荧光蚁', desc: '尾部闪烁萤火的夜行画师', reqStars: 90 },
+    { id: 'royal', name: '皇家金冠蚁', desc: '镶嵌红宝石王冠的殿堂近卫', reqStars: 150 }
+  ];
+
+  var UI_THEMES = [
+    { id: 'candy', name: '果冻盲盒', desc: '虹彩气泡 · Q弹果冻', swatch: 'linear-gradient(135deg,#ff85c0,#89e8ff)', defaultBlock: 'jelly' },
+    { id: 'craft', name: '奶油手账', desc: '和纸桌面 · 立体拼豆', swatch: 'linear-gradient(135deg,#b5e399,#f8e8c8)', defaultBlock: 'bead' },
+    { id: 'soda', name: '海盐苏打', desc: '晴空冰蓝 · 苏打冰块', swatch: 'linear-gradient(135deg,#38bdf8,#fef08a)', defaultBlock: 'ice' },
+    { id: 'lavender', name: '薰衣草梦', desc: '梦幻紫雾 · 棱面宝石', swatch: 'linear-gradient(135deg,#c084fc,#93c5fd)', defaultBlock: 'gem' },
+    { id: 'caramel', name: '焦糖咖啡', desc: '生椰拿铁 · 可可生巧', swatch: 'linear-gradient(135deg,#e09a5c,#7c3f1d)', defaultBlock: 'choco' },
+    { id: 'ribbon', name: '草莓甜心', desc: '缎面莓果 · 奶油方糖', swatch: 'linear-gradient(135deg,#fb7185,#ffe4eb)', defaultBlock: 'sugar' }
+  ];
+
+  var BLOCK_STYLES = [
+    { id: 'jelly', name: 'Q弹果冻', desc: '圆角果汁光' },
+    { id: 'bead', name: '立体拼豆', desc: '经典拼豆孔' },
+    { id: 'ice', name: '晶透冰块', desc: '冰晶斜折光' },
+    { id: 'gem', name: '棱面宝石', desc: '钻石星芒面' },
+    { id: 'choco', name: '可可生巧', desc: '四边斜面块' },
+    { id: 'sugar', name: '奶油方糖', desc: '糖霜彩虹粒' }
+  ];
+
+  function getScratchMotif(chapter, seed) {
+    if (chapter === 4 || chapter === 8) return 'shell';
+    if (chapter === 11 || chapter === 16) return 'wand';
+    if (chapter === 17) return 'planet';
+    if (chapter === 18) return 'crown';
+    if (chapter === 2 || chapter === 7 || chapter === 10) return 'teacup';
+    if (chapter === 1 || chapter === 3) return (seed % 2 === 0) ? 'pan' : 'flower';
+    return 'flower';
+  }
+
+  function getTodayKey() {
+    var d = new Date();
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1);
+    if (m.length < 2) m = '0' + m;
+    var day = String(d.getDate());
+    if (day.length < 2) day = '0' + day;
+    return y + '-' + m + '-' + day;
+  }
+
+  function hashDateKey(dateKey) {
+    var s = String(dateKey || getTodayKey());
+    var h = 2166136261;
+    for (var i = 0; i < s.length; i += 1) {
+      h ^= s.charCodeAt(i);
+      h = (h * 16777619) >>> 0;
+    }
+    return h || 90210;
+  }
+
+  function getDailyConfig(dateKey, options) {
+    var key = dateKey || getTodayKey();
+    var seed = hashDateKey(key);
+    var rng = createRng(seed);
+    var variants = ['flowerMandala', 'rose', 'hexCrest', 'diamondRing', 'crossMandala', 'symMonster', 'chevronWave', 'spiral'];
+    var size = 20;
+    var colorKeys = Object.keys(PALETTE);
+    var palettePick = [];
+    while (palettePick.length < 5) {
+      var k = colorKeys[Math.floor(rng() * colorKeys.length)];
+      if (palettePick.indexOf(k) === -1) palettePick.push(k);
+    }
+    var spec = {
+      name: key.slice(5) + ' · 限定画卷',
+      gridSize: size,
+      geo: [variants[seed % variants.length], size, palettePick],
+      doubleRate: 0.14,
+      mudRate: (seed % 2 === 0) ? 0.14 : 0,
+      wrapRate: (seed % 2 === 1) ? 0.12 : 0,
+      hasKey: (seed % 3 === 0),
+      lockRate: 0.14,
+      mysteryRate: 0.12,
+      nightTheme: (seed % 5 === 0),
+      allowBomber: true
+    };
+    var hardMode = !!(options && options.hardMode);
+    var grid = buildGridFromSpec(spec, (seed % 900) + 200);
+    var baseSlots = hardMode ? 4 : 5;
+    var poolData = generateSolvablePool(grid, spec.mysteryRate, seed ^ 0x7f4a7c15, true, 80, baseSlots);
+    return {
+      id: 8000,
+      isDaily: true,
+      dateKey: key,
+      chapter: 18,
+      chapterName: '每日一画',
+      name: spec.name,
+      nightTheme: spec.nightTheme,
+      isHard: hardMode,
+      scratchMotif: 'crown',
+      rows: grid.length,
+      cols: grid[0].length,
+      grid: grid,
+      visiblePool: poolData.visiblePool,
+      reserveDeck: poolData.reserveDeck,
+      baseSlots: baseSlots,
+      isEndless: false
+    };
+  }
+
+  function parseHexRgb(hex) {
+    var s = String(hex || '#000000').replace('#', '');
+    return [
+      parseInt(s.slice(0, 2), 16) || 0,
+      parseInt(s.slice(2, 4), 16) || 0,
+      parseInt(s.slice(4, 6), 16) || 0
+    ];
+  }
+
+  var PALETTE_RGB = {};
+  (function () {
+    var keys = Object.keys(PALETTE);
+    for (var i = 0; i < keys.length; i += 1) {
+      PALETTE_RGB[keys[i]] = parseHexRgb(PALETTE[keys[i]].hex);
+    }
+  })();
+
+  function nearestPaletteKey(r, g, b, allowedKeys) {
+    var bestKey = allowedKeys[0];
+    var bestDist = Infinity;
+    for (var i = 0; i < allowedKeys.length; i += 1) {
+      var k = allowedKeys[i];
+      var rgb = PALETTE_RGB[k];
+      var dr = r - rgb[0];
+      var dg = g - rgb[1];
+      var db = b - rgb[2];
+      var dist = 2 * dr * dr + 4 * dg * dg + 3 * db * db;
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestKey = k;
+      }
+    }
+    return bestKey;
+  }
+
+  function buildDiyConfigFromGrid(grid, title, options) {
+    var dim = grid.length;
+    var hardMode = !!(options && options.hardMode);
+    var diySource = (options && options.diySource) || 'photo';
+    var validCount = countRemainingCarries(grid);
+    if (validCount < 8) {
+      return { ok: false, reason: 'too_empty' };
+    }
+    var baseSlots = hardMode ? 4 : 5;
+    var diySeed = (Date.now() & 0xfffffff) ^ (validCount * 131);
+    var poolData = generateSolvablePool(grid, 0, diySeed, true, 50, baseSlots);
+    return {
+      ok: true,
+      config: {
+        id: 9001,
+        isDiy: true,
+        diySource: diySource,
+        chapter: 1,
+        chapterName: diySource === 'studio' ? '手绘拼豆工坊' : '相册 DIY',
+        name: String(title || (diySource === 'studio' ? '我的手绘拼豆' : '我的照片像素画')).slice(0, 12),
+        nightTheme: false,
+        isHard: hardMode,
+        scratchMotif: 'flower',
+        rows: dim,
+        cols: dim,
+        grid: grid,
+        visiblePool: poolData.visiblePool,
+        reserveDeck: poolData.reserveDeck,
+        baseSlots: baseSlots,
+        isEndless: false
+      }
+    };
+  }
+
+  function buildCustomConfigFromCharRows(charRows, title, options) {
+    if (!Array.isArray(charRows) || charRows.length < 8) {
+      return { ok: false, reason: 'invalid_rows' };
+    }
+    var dim = charRows.length;
+    var grid = [];
+    for (var r = 0; r < dim; r += 1) {
+      var line = String(charRows[r] || '');
+      var row = [];
+      for (var c = 0; c < dim; c += 1) {
+        var ch = line.charAt(c);
+        if (!ch || ch === '.' || !PALETTE[ch]) {
+          row.push(null);
+          continue;
+        }
+        row.push({
+          color: ch,
+          layers: 1,
+          mud: false,
+          wrapped: false,
+          key: false,
+          locked: false,
+          origColor: ch
+        });
+      }
+      grid.push(row);
+    }
+    return buildDiyConfigFromGrid(grid, title, options);
+  }
+
+  function buildCustomConfigFromPixels(rgbaData, size, title, options) {
+    var dim = size || 20;
+    if (!rgbaData || rgbaData.length < dim * dim * 4) {
+      return { ok: false, reason: 'invalid_pixels' };
+    }
+    var allKeys = Object.keys(PALETTE);
+    var freq = {};
+    var validCount = 0;
+    var i, idx, a, k;
+    for (i = 0; i < dim * dim; i += 1) {
+      idx = i * 4;
+      a = rgbaData[idx + 3];
+      if (a < 64) continue;
+      validCount += 1;
+      k = nearestPaletteKey(rgbaData[idx], rgbaData[idx + 1], rgbaData[idx + 2], allKeys);
+      freq[k] = (freq[k] || 0) + 1;
+    }
+    if (validCount < 8) {
+      return { ok: false, reason: 'too_empty' };
+    }
+
+    var topKeys = Object.keys(freq).sort(function (x, y) {
+      return freq[y] - freq[x];
+    }).slice(0, 6);
+
+    var grid = [];
+    for (var r = 0; r < dim; r += 1) {
+      var row = [];
+      for (var c = 0; c < dim; c += 1) {
+        var pIdx = (r * dim + c) * 4;
+        if (rgbaData[pIdx + 3] < 64) {
+          row.push(null);
+          continue;
+        }
+        var cKey = nearestPaletteKey(rgbaData[pIdx], rgbaData[pIdx + 1], rgbaData[pIdx + 2], topKeys);
+        row.push({
+          color: cKey,
+          layers: 1,
+          mud: false,
+          wrapped: false,
+          key: false,
+          locked: false,
+          origColor: cKey
+        });
+      }
+      grid.push(row);
+    }
+
+    return buildDiyConfigFromGrid(grid, title, options);
   }
 
   global.AntLevels = {
     PALETTE: PALETTE,
     CHAPTERS: CHAPTERS,
+    ANT_SKINS: ANT_SKINS,
+    UI_THEMES: UI_THEMES,
+    BLOCK_STYLES: BLOCK_STYLES,
     TOTAL_LEVELS: LEVEL_SPECS.length,
     getMetaList: function () {
       var list = [];
@@ -1077,6 +1457,10 @@
       }
       return list;
     },
+    getTodayKey: getTodayKey,
+    getDailyConfig: getDailyConfig,
+    buildCustomConfigFromPixels: buildCustomConfigFromPixels,
+    buildCustomConfigFromCharRows: buildCustomConfigFromCharRows,
     getArtworkPreview: getArtworkPreview,
     getLevelConfig: getLevelConfig,
     getEndlessConfig: getEndlessConfig,

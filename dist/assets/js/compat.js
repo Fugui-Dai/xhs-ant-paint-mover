@@ -162,7 +162,14 @@
     }
   }
 
+  var vibrateEnabled = false;
+
+  function setVibrateEnabled(enabled) {
+    vibrateEnabled = !!enabled;
+  }
+
   function vibrate(type) {
+    if (!vibrateEnabled) return;
     var miniTool = getMiniTool();
     if (!miniTool || typeof miniTool.vibrateShort !== 'function') return;
     isClientVersionAtLeast(9500).then(function (okVer) {
@@ -183,8 +190,12 @@
     try {
       var mediaUrl = dataUrl;
       if (typeof miniTool.writeTempFile === 'function') {
-        var tmp = await miniTool.writeTempFile({ data: dataUrl });
-        if (tmp && tmp.filePath) mediaUrl = tmp.filePath;
+        try {
+          var tmp = await miniTool.writeTempFile({ data: dataUrl });
+          if (tmp && tmp.filePath) mediaUrl = tmp.filePath;
+        } catch (te) {
+          /* 降级直接使用 data URI */
+        }
       }
       await miniTool.postNote({
         title: String(title || '蚂蚁搬画').slice(0, 20),
@@ -206,8 +217,12 @@
     try {
       var filePath = dataUrl;
       if (typeof miniTool.writeTempFile === 'function') {
-        var tmp = await miniTool.writeTempFile({ data: dataUrl });
-        if (tmp && tmp.filePath) filePath = tmp.filePath;
+        try {
+          var tmp = await miniTool.writeTempFile({ data: dataUrl });
+          if (tmp && tmp.filePath) filePath = tmp.filePath;
+        } catch (te) {
+          /* 降级直接使用 data URI */
+        }
       }
       await miniTool.saveImageToPhotosAlbum({ filePath: filePath });
       return { ok: true };
@@ -241,9 +256,11 @@
   var CLOUD_COLLECTION = 'ant_save';
   var cloudState = {
     recordId: null,
+    initialQueried: false,
     disabled: false,
     lastSyncAt: 0,
     pendingSync: false,
+    pendingProgress: null,
     syncTimer: 0,
     statusText: 'local' /* local | synced | syncing | unavailable */
   };
@@ -265,6 +282,15 @@
     return out;
   }
 
+  function collectCatalogIds(items, fallback) {
+    if (!Array.isArray(items) || items.length === 0) return fallback;
+    var outIds = [];
+    for (var ci = 0; ci < items.length; ci += 1) {
+      if (items[ci] && items[ci].id) outIds.push(items[ci].id);
+    }
+    return outIds.length > 0 ? outIds : fallback;
+  }
+
   function mergeProgressData(localProg, remoteProg) {
     var a = localProg && typeof localProg === 'object' ? localProg : {};
     var b = remoteProg && typeof remoteProg === 'object' ? remoteProg : {};
@@ -283,6 +309,8 @@
     var unlockB = Number(b.unlockedLevel) || 1;
     var endlessA = Number(a.endlessBest) || 0;
     var endlessB = Number(b.endlessBest) || 0;
+    var endlessHardA = Number(a.endlessHardBest) || 0;
+    var endlessHardB = Number(b.endlessHardBest) || 0;
 
     var toolsA = a.tools && typeof a.tools === 'object' ? a.tools : {};
     var toolsB = b.tools && typeof b.tools === 'object' ? b.tools : {};
@@ -295,7 +323,120 @@
     };
 
     var soundVal = typeof a.sound === 'boolean' ? a.sound : (typeof b.sound === 'boolean' ? b.sound : true);
-    var changedLocal = (unlockB > unlockA) || (endlessB > endlessA) || (preferRemote && keysB.length > 0);
+    var vibrateVal = (preferRemote && typeof b.vibrate === 'boolean')
+      ? b.vibrate
+      : (typeof a.vibrate === 'boolean' ? a.vibrate : (typeof b.vibrate === 'boolean' ? b.vibrate : false));
+
+    var dailyA = a.daily && typeof a.daily === 'object' ? a.daily : { lastDate: '', streak: 0, hardLastDate: '' };
+    var dailyB = b.daily && typeof b.daily === 'object' ? b.daily : { lastDate: '', streak: 0, hardLastDate: '' };
+    var useDailyB = (dailyB.lastDate || '') > (dailyA.lastDate || '') ||
+      ((dailyB.lastDate || '') === (dailyA.lastDate || '') && (Number(dailyB.streak) || 0) > (Number(dailyA.streak) || 0));
+    var dailyHardLast = (dailyB.hardLastDate || '') > (dailyA.hardLastDate || '') ? (dailyB.hardLastDate || '') : (dailyA.hardLastDate || '');
+    var mergedDaily = {
+      lastDate: useDailyB ? (dailyB.lastDate || '') : (dailyA.lastDate || ''),
+      streak: useDailyB ? (Number(dailyB.streak) || 0) : (Number(dailyA.streak) || 0),
+      hardLastDate: dailyHardLast
+    };
+    var mergedDiy = Math.max(Number(a.diyCount) || 0, Number(b.diyCount) || 0);
+    var VALID_THEMES = collectCatalogIds(global.AntLevels && global.AntLevels.UI_THEMES, ['candy', 'craft', 'soda', 'lavender', 'caramel', 'ribbon']);
+    var VALID_BLOCKS = collectCatalogIds(global.AntLevels && global.AntLevels.BLOCK_STYLES, ['jelly', 'bead', 'ice', 'gem', 'choco', 'sugar']);
+    var VALID_SOUNDS = collectCatalogIds(global.AntAudio && global.AntAudio.SOUND_PACKS, ['marimba', 'pudding', 'mechanical', 'soda', 'musicbox', 'retro']);
+    function pickValid(val, arr, fallback) {
+      return (typeof val === 'string' && arr.indexOf(val) >= 0) ? val : fallback;
+    }
+
+    var mergedSkin = (preferRemote && b.selectedSkin) ? b.selectedSkin : (a.selectedSkin || b.selectedSkin || 'classic');
+    var rawThemeA = pickValid(a.selectedTheme, VALID_THEMES, 'candy');
+    var rawThemeB = (typeof b.selectedTheme === 'string' && VALID_THEMES.indexOf(b.selectedTheme) >= 0) ? b.selectedTheme : '';
+    var mergedTheme = (preferRemote && rawThemeB) ? rawThemeB : (rawThemeA || rawThemeB || 'candy');
+    var mergedBlock = (preferRemote && typeof b.selectedBlockStyle === 'string' && VALID_BLOCKS.indexOf(b.selectedBlockStyle) >= 0)
+      ? b.selectedBlockStyle
+      : pickValid(a.selectedBlockStyle, VALID_BLOCKS, pickValid(b.selectedBlockStyle, VALID_BLOCKS, 'jelly'));
+    var mergedSoundPack = (preferRemote && typeof b.selectedSoundPack === 'string' && VALID_SOUNDS.indexOf(b.selectedSoundPack) >= 0)
+      ? b.selectedSoundPack
+      : pickValid(a.selectedSoundPack, VALID_SOUNDS, pickValid(b.selectedSoundPack, VALID_SOUNDS, 'pudding'));
+    var mergedHard = typeof a.hardMode === 'boolean' ? a.hardMode : (typeof b.hardMode === 'boolean' ? b.hardMode : false);
+
+    var hardStarsA = a.hardStars && typeof a.hardStars === 'object' ? a.hardStars : {};
+    var hardStarsB = b.hardStars && typeof b.hardStars === 'object' ? b.hardStars : {};
+    var mergedHardStars = clonePlainObject(hardStarsA);
+    var hKeysB = Object.keys(hardStarsB);
+    var hardStarsChanged = false;
+    for (var hi = 0; hi < hKeysB.length; hi += 1) {
+      var hk = hKeysB[hi];
+      var hsb = Number(hardStarsB[hk]) || 0;
+      var hsa = Number(mergedHardStars[hk]) || 0;
+      if (hsb > hsa) {
+        mergedHardStars[hk] = hsb;
+        hardStarsChanged = true;
+      }
+    }
+
+    function sanitizeCustomGallery(list) {
+      var out = [];
+      if (!Array.isArray(list)) return out;
+      for (var idx = 0; idx < list.length; idx += 1) {
+        var it = list[idx];
+        if (!it || !it.uid || !Array.isArray(it.rows) || it.rows.length < 8) continue;
+        out.push({
+          uid: String(it.uid).slice(0, 32),
+          name: String(it.name || '原创画').slice(0, 12),
+          diySource: it.diySource === 'studio' ? 'studio' : 'photo',
+          size: Number(it.size) || it.rows.length,
+          rows: it.rows.slice(0, 24),
+          stars: Number(it.stars) || 3,
+          isHard: !!it.isHard,
+          at: Number(it.at) || 0
+        });
+      }
+      return out;
+    }
+
+    var cgA = sanitizeCustomGallery(a.customGallery);
+    var cgB = sanitizeCustomGallery(b.customGallery);
+    var cgMap = {};
+    var cgList = [];
+    for (var ci1 = 0; ci1 < cgA.length; ci1 += 1) {
+      cgMap[cgA[ci1].uid] = cgA[ci1];
+    }
+    var customGalleryChanged = false;
+    for (var ci2 = 0; ci2 < cgB.length; ci2 += 1) {
+      var remoteCg = cgB[ci2];
+      var existingCg = cgMap[remoteCg.uid];
+      if (!existingCg) {
+        cgMap[remoteCg.uid] = remoteCg;
+        customGalleryChanged = true;
+      } else {
+        var betterStars = Math.max(existingCg.stars || 0, remoteCg.stars || 0);
+        var mergedItemHard = !!(existingCg.isHard || remoteCg.isHard);
+        var newerAt = Math.max(existingCg.at || 0, remoteCg.at || 0);
+        var changedItem = (betterStars > (existingCg.stars || 0)) || (mergedItemHard && !existingCg.isHard);
+        if (changedItem || newerAt > (existingCg.at || 0)) {
+          cgMap[remoteCg.uid] = {
+            uid: existingCg.uid,
+            name: (remoteCg.at || 0) >= (existingCg.at || 0) ? remoteCg.name : existingCg.name,
+            diySource: existingCg.diySource,
+            size: existingCg.size,
+            rows: existingCg.rows,
+            stars: betterStars,
+            isHard: mergedItemHard,
+            at: newerAt
+          };
+          if (changedItem) customGalleryChanged = true;
+        }
+      }
+    }
+    var cgKeys = Object.keys(cgMap);
+    for (var ck = 0; ck < cgKeys.length; ck += 1) cgList.push(cgMap[cgKeys[ck]]);
+    cgList.sort(function (x, y) { return (y.at || 0) - (x.at || 0); });
+    cgList = cgList.slice(0, 6);
+
+    var changedLocal = (unlockB > unlockA) || (endlessB > endlessA) || (endlessHardB > endlessHardA) ||
+      (preferRemote && keysB.length > 0) || useDailyB || (dailyHardLast !== (dailyA.hardLastDate || '')) ||
+      (mergedDiy > (Number(a.diyCount) || 0)) || (mergedTheme !== a.selectedTheme) ||
+      (mergedBlock !== a.selectedBlockStyle) || (mergedSoundPack !== a.selectedSoundPack) ||
+      (mergedSkin !== a.selectedSkin) || (soundVal !== a.sound) || (vibrateVal !== !!a.vibrate) || (mergedHard !== a.hardMode) ||
+      hardStarsChanged || customGalleryChanged;
     if (!changedLocal) {
       for (var j = 0; j < keysB.length; j += 1) {
         var key = keysB[j];
@@ -311,29 +452,59 @@
       progress: {
         unlockedLevel: Math.max(unlockA, unlockB),
         stars: mergedStars,
+        hardStars: mergedHardStars,
+        customGallery: cgList,
         endlessBest: Math.max(endlessA, endlessB),
+        endlessHardBest: Math.max(endlessHardA, endlessHardB),
         tools: mergedTools,
-        sound: soundVal
+        sound: soundVal,
+        vibrate: vibrateVal,
+        daily: mergedDaily,
+        selectedSkin: mergedSkin,
+        selectedTheme: mergedTheme,
+        selectedBlockStyle: mergedBlock,
+        selectedSoundPack: mergedSoundPack,
+        hardMode: mergedHard,
+        diyCount: mergedDiy
       }
     };
   }
 
   function buildCompactCloudPayload(progress) {
+    var cgSafe = Array.isArray(progress.customGallery) ? progress.customGallery.slice(0, 6) : [];
     var payload = {
-      v: 1,
+      v: 5,
       unlockedLevel: Number(progress.unlockedLevel) || 1,
       stars: clonePlainObject(progress.stars),
+      hardStars: clonePlainObject(progress.hardStars),
+      customGallery: cgSafe,
       endlessBest: Number(progress.endlessBest) || 0,
+      endlessHardBest: Number(progress.endlessHardBest) || 0,
       tools: {
         undo: progress.tools && typeof progress.tools.undo === 'number' ? progress.tools.undo : 3,
         slot: progress.tools && typeof progress.tools.slot === 'number' ? progress.tools.slot : 2,
         rainbow: progress.tools && typeof progress.tools.rainbow === 'number' ? progress.tools.rainbow : 2
       },
       sound: progress.sound !== false,
+      vibrate: !!progress.vibrate,
+      daily: {
+        lastDate: (progress.daily && progress.daily.lastDate) || '',
+        streak: Number(progress.daily && progress.daily.streak) || 0,
+        hardLastDate: (progress.daily && progress.daily.hardLastDate) || ''
+      },
+      selectedSkin: progress.selectedSkin || 'classic',
+      selectedTheme: progress.selectedTheme || 'candy',
+      selectedBlockStyle: progress.selectedBlockStyle || 'jelly',
+      selectedSoundPack: progress.selectedSoundPack || 'pudding',
+      hardMode: !!progress.hardMode,
+      diyCount: Number(progress.diyCount) || 0,
       updatedAt: Date.now()
     };
     /* 确保持久内容远低于 64KB（65536 字节）配额限制 */
     try {
+      if (JSON.stringify(payload).length > 56000) {
+        delete payload.customGallery;
+      }
       if (JSON.stringify(payload).length > 60000) {
         delete payload.tools;
       }
@@ -376,11 +547,12 @@
     try {
       cloudState.statusText = 'syncing';
       var res = await cap.miniTool.queryCloudStorage({ collection: CLOUD_COLLECTION, limit: 20 });
+      cloudState.initialQueried = true;
       var items = res && Array.isArray(res.items) ? res.items : [];
       if (items.length === 0) {
         cloudState.statusText = 'synced';
         /* 本地已有进度时顺便备份到云端 */
-        if ((localProgress.unlockedLevel || 1) > 1 || Object.keys(localProgress.stars || {}).length > 0 || (localProgress.endlessBest || 0) > 0) {
+        if ((localProgress.unlockedLevel || 1) > 1 || Object.keys(localProgress.stars || {}).length > 0 || (localProgress.endlessBest || 0) > 0 || (localProgress.daily && localProgress.daily.streak > 0)) {
           pushCloudSave(localProgress, true);
         }
         return { ok: true, merged: false, progress: localProgress, status: 'synced' };
@@ -428,6 +600,14 @@
     cloudState.pendingSync = false;
     try {
       cloudState.statusText = 'syncing';
+      if (!cloudState.recordId && !cloudState.initialQueried) {
+        var qCheck = await cap.miniTool.queryCloudStorage({ collection: CLOUD_COLLECTION, limit: 20 });
+        cloudState.initialQueried = true;
+        var qItems = qCheck && Array.isArray(qCheck.items) ? qCheck.items : [];
+        if (qItems.length > 0 && qItems[0] && qItems[0].id) {
+          cloudState.recordId = qItems[0].id;
+        }
+      }
       if (cloudState.recordId) {
         var uRes = await cap.miniTool.updateCloudStorage({
           collection: CLOUD_COLLECTION,
@@ -468,6 +648,7 @@
 
   function pushCloudSave(progress, immediate) {
     if (cloudState.disabled) return;
+    cloudState.pendingProgress = progress;
     var now = Date.now();
     var elapsed = now - cloudState.lastSyncAt;
     if (immediate || elapsed >= 15000) {
@@ -475,14 +656,16 @@
         clearTimeout(cloudState.syncTimer);
         cloudState.syncTimer = 0;
       }
-      pushCloudSaveImmediate(progress);
+      pushCloudSaveImmediate(cloudState.pendingProgress);
       return;
     }
     cloudState.pendingSync = true;
     if (cloudState.syncTimer) clearTimeout(cloudState.syncTimer);
     cloudState.syncTimer = setTimeout(function () {
       cloudState.syncTimer = 0;
-      if (cloudState.pendingSync) pushCloudSaveImmediate(progress);
+      if (cloudState.pendingSync && cloudState.pendingProgress) {
+        pushCloudSaveImmediate(cloudState.pendingProgress);
+      }
     }, 15000 - elapsed);
   }
 
@@ -611,13 +794,14 @@
     pushCloudSave: pushCloudSave,
     getCloudStatus: function () { return cloudState.statusText; },
     applyCapsuleSafeArea: applyCapsuleSafeArea,
+    collectCatalogIds: collectCatalogIds,
+    setVibrateEnabled: setVibrateEnabled,
     vibrate: vibrate,
     postArtworkNote: postArtworkNote,
     savePosterToAlbum: savePosterToAlbum,
     shareArtwork: shareArtwork,
     checkRankSupport: checkRankSupport,
     submitRankScore: submitRankScore,
-    fetchRankData: fetchRankData,
-    hasMiniTool: function () { return !!getMiniTool(); }
+    fetchRankData: fetchRankData
   };
 })(window);

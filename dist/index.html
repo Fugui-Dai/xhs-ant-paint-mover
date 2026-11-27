@@ -8,63 +8,68 @@
   <link rel="stylesheet" href="./assets/css/style.css" />
 </head>
 <body>
-  <div id="app" class="app-shell">
-    <!-- 顶部 2D 简约功能栏（兼容胶囊避让与安全区） -->
+  <div id="app" class="app-shell" data-theme="candy">
+    <!-- 顶部绘本标题栏（严格保留右上角胶囊避让与安全区） -->
     <header id="top-bar" class="top-bar">
       <div class="top-bar-inner">
-        <button id="btn-levels" class="pill-btn levels-btn" type="button" aria-label="选择关卡" title="选关">
-          <span aria-hidden="true">🗺️</span>
-          <span>选关</span>
-        </button>
         <div class="title-cluster">
           <h1 id="header-title" class="header-title">蚂蚁搬画 · 第 1 关</h1>
-          <p id="header-sub" class="header-sub">太阳煎蛋 · 早餐食光</p>
-        </div>
-        <div class="top-actions">
-          <button id="btn-gallery" class="pill-btn gallery-pill" type="button" aria-label="蚁巢画廊">
-            <canvas id="mini-canvas" class="mini-canvas" width="24" height="24"></canvas>
-            <span id="gallery-icon" aria-hidden="true" hidden>🖼️</span>
-            <span id="gallery-count-badge">0/360</span>
-          </button>
+          <p id="header-sub" class="header-sub">太阳煎蛋 · 街头小吃街</p>
         </div>
       </div>
     </header>
 
-    <!-- 选关视图（点击顶部“选关”进入） -->
+    <!-- 选关与创意工坊中心 -->
     <main id="screen-home" class="screen screen-home" hidden>
       <section class="level-hub-bar">
+        <div class="washi-tape" aria-hidden="true"></div>
         <div class="hub-stats-row">
           <span class="hub-chip">藏画 <strong id="stat-cleared">0 / 360</strong></span>
           <span class="hub-chip">星星 <strong id="stat-stars">0 ★</strong></span>
+          <span class="hub-chip">连签 <strong id="stat-daily">0 天</strong></span>
           <span class="hub-chip">无尽 <strong id="stat-endless">0</strong></span>
         </div>
-        <div class="hub-btn-row">
-          <button id="btn-continue" class="primary-btn small-btn" type="button">
-            回到第 <span id="continue-level-num">1</span> 关
+        <div class="hub-mode-grid">
+          <button id="btn-continue" class="primary-btn hub-mode-btn" type="button">
+            <span>▶ 回到第 <span id="continue-level-num">1</span> 关</span>
           </button>
-          <button id="btn-endless" class="secondary-btn small-btn" type="button">
-            无尽挑战
+          <button id="btn-daily" class="daily-btn hub-mode-btn" type="button">
+            <span>📅 每日一画</span>
+            <span id="daily-status-tag" class="mode-sub-tag">今日待挑战</span>
           </button>
-          <button id="btn-rank-home" class="secondary-btn small-btn" type="button">
-            🏆 榜单
+          <button id="btn-endless" class="secondary-btn hub-mode-btn" type="button">
+            <span>♾️ 无尽挑战</span>
+            <span id="endless-best-tag" class="mode-sub-tag">纪录 第0关</span>
+          </button>
+          <button id="btn-diy" class="diy-btn hub-mode-btn" type="button">
+            <span>📷 照片转画</span>
+            <span class="mode-sub-tag">选图变 20×20</span>
           </button>
         </div>
+        <button id="btn-hard-mode" class="hard-mode-toggle" type="button">
+          <span id="hard-mode-title">🛡️ 休闲 5 槽（标准）</span>
+          <span id="hard-mode-tag" class="mode-sub-tag">切4槽</span>
+        </button>
+        <button id="btn-rank-home" class="secondary-btn small-btn rank-home-btn" type="button" hidden>
+          🏆 森林排行榜
+        </button>
+        <input id="diy-file-input" type="file" accept="image/*" hidden />
         <div id="cloud-sync-hint" class="cloud-sync-hint" hidden>☁️ 云存档已开启（同账号跨端同步）</div>
       </section>
 
       <section id="chapter-list" class="chapter-list" aria-label="主题章节与关卡列表"></section>
     </main>
 
-    <!-- 核心游玩视图：开局直接进入（2D 森林草地画架 + 5暂存槽 + 2x4全可点小队阵） -->
+    <!-- 核心游玩视图：开局直接进入（动态生态画布 + 透明亚克力拼豆暂存盒 + 2x4 果冻胶囊小队阵） -->
     <main id="screen-game" class="screen screen-game">
       <!-- 紧凑进度条 + 节奏与音效控制 -->
       <div class="hud-strip">
-        <span id="hud-chapter-tag" class="hud-tag">早餐食光</span>
+        <span id="hud-hard-badge" class="hud-hard-badge" hidden>🔥4槽</span>
         <div class="progress-track">
           <div id="hud-progress-fill" class="progress-fill"></div>
         </div>
         <span id="hud-remain-text" class="hud-remain">0 块</span>
-        <span id="hud-combo-badge" class="combo-badge is-hidden" aria-hidden="true">x<span id="hud-combo-num">1</span></span>
+        <span id="hud-combo-badge" class="combo-badge is-hidden" aria-hidden="true"><span id="hud-combo-num">x1</span></span>
         <button id="btn-speed" class="hud-mini-btn speed-btn" type="button" aria-label="切换速度">
           <span id="speed-label">x1</span>
         </button>
@@ -72,26 +77,49 @@
         <button id="btn-sound" class="hud-mini-btn" type="button" aria-label="音效开关" title="音效">
           <span id="sound-icon" aria-hidden="true">🔊</span>
         </button>
+        <button id="btn-vibrate" class="hud-mini-btn vibrate-btn" type="button" aria-label="震动与抖屏开关（已关闭）" title="震动与抖屏（当前关闭）">
+          <svg class="vibrate-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="7" y="4" width="10" height="16" rx="2.2"></rect>
+            <line x1="11" y1="17" x2="13" y2="17"></line>
+            <path class="vib-waves" d="M4 9c-.8 1-.8 5 0 6M20 9c.8 1 .8 5 0 6"></path>
+            <line class="vib-slash" x1="3" y1="3" x2="21" y2="21"></line>
+          </svg>
+        </button>
       </div>
 
-      <!-- 核心 2D 画布舞台（无悬浮遮挡） -->
+      <!-- 核心 2D 动态主题舞台 -->
       <section class="stage-wrap" aria-label="2D 像素画与蚁丘舞台">
         <canvas id="game-canvas" class="game-canvas"></canvas>
-        <div id="stage-tip" class="stage-tip" role="status">点击底部任意蚂蚁小队出征，注意不要堵满 5 个槽位</div>
+        <div id="stage-tip" class="stage-tip" role="status">正在准备蚁群画架… 点击底部任意蚂蚁小队出征</div>
       </section>
 
-      <!-- 中部 5 个暂存槽 -->
-      <section class="dock-section" aria-label="蚁群暂存槽">
-        <div id="dock-slots" class="dock-slots"></div>
+      <!-- 中部 5 格透明亚克力拼豆暂存盒（静态首屏骨架） -->
+      <section class="dock-section" aria-label="亚克力拼豆暂存盒">
+        <div id="dock-slots" class="dock-slots">
+          <div class="dock-slot" aria-hidden="true"></div>
+          <div class="dock-slot" aria-hidden="true"></div>
+          <div class="dock-slot" aria-hidden="true"></div>
+          <div class="dock-slot" aria-hidden="true"></div>
+          <div class="dock-slot" aria-hidden="true"></div>
+        </div>
       </section>
 
-      <!-- 底部全可点混合小队阵 (最多8个按钮同时可点，不锁死不剧透) -->
+      <!-- 底部全可点果冻胶囊小队阵 (最多8个按钮同时可点) -->
       <section class="supply-section" aria-label="待命蚁群阵">
         <div class="supply-meta">
           <span class="supply-title">待命蚁群（全部可点）</span>
-          <span id="supply-reserve-text" class="supply-reserve">后续还有 0 队</span>
+          <span id="supply-reserve-text" class="supply-reserve">正在列队…</span>
         </div>
-        <div id="supply-grid" class="supply-grid"></div>
+        <div id="supply-grid" class="supply-grid">
+          <div class="squad-placeholder" aria-hidden="true"></div>
+          <div class="squad-placeholder" aria-hidden="true"></div>
+          <div class="squad-placeholder" aria-hidden="true"></div>
+          <div class="squad-placeholder" aria-hidden="true"></div>
+          <div class="squad-placeholder" aria-hidden="true"></div>
+          <div class="squad-placeholder" aria-hidden="true"></div>
+          <div class="squad-placeholder" aria-hidden="true"></div>
+          <div class="squad-placeholder" aria-hidden="true"></div>
+        </div>
         <div class="tools-bar">
           <button id="tool-undo" class="tool-btn" type="button">
             <span class="tool-icon" aria-hidden="true">↩️</span>
@@ -116,21 +144,124 @@
       </section>
     </main>
 
-    <!-- 蚁巢画廊视图 -->
+    <!-- 新页面 1：活态地下蚁巢微缩收藏馆 -->
     <main id="screen-gallery" class="screen screen-gallery" hidden>
-      <div class="gallery-header">
-        <div>
-          <h2 class="gallery-title">蚁巢藏画廊</h2>
-          <p class="gallery-sub">每一幅搬运完成的画作，都珍藏在森林地下画室</p>
+      <section class="sanctuary-card">
+        <canvas id="sanctuary-canvas" class="sanctuary-canvas" width="360" height="236"></canvas>
+        <div class="sanctuary-controls">
+          <button id="btn-feed-ants" class="secondary-btn small-btn" type="button">🍬 喂蜂蜜糖</button>
+          <button id="btn-toggle-lantern" class="secondary-btn small-btn" type="button">🏮 萤火夜灯</button>
         </div>
-        <button id="btn-gallery-back" class="secondary-btn small-btn" type="button">返回</button>
-      </div>
+      </section>
       <div id="gallery-grid" class="gallery-chapters"></div>
     </main>
 
-    <!-- 弹窗：过关 / 失败 / 画作海报 -->
+    <!-- 新页面 2：自由手绘拼豆工坊（16x16 对称涂鸦 -> 召唤蚂蚁来搬） -->
+    <main id="screen-studio" class="screen screen-studio" hidden>
+      <section class="studio-easel-card">
+        <canvas id="studio-canvas" class="studio-canvas" width="320" height="320"></canvas>
+        <div class="studio-tool-row">
+          <button id="btn-studio-mirror" class="secondary-btn small-btn is-toggled" type="button">⇄ 对称: 开</button>
+          <button id="btn-studio-eraser" class="secondary-btn small-btn" type="button">🧽 橡皮擦</button>
+          <button id="btn-studio-random" class="secondary-btn small-btn" type="button">✨ 灵感</button>
+          <button id="btn-studio-clear" class="secondary-btn small-btn" type="button">🗑️ 清屏</button>
+        </div>
+        <div id="studio-palette" class="studio-palette" aria-label="12色拼豆画笔调色板"></div>
+        <button id="btn-studio-play" class="primary-btn studio-play-btn" type="button">
+          ▶ 召唤蚂蚁来搬画
+        </button>
+      </section>
+    </main>
+
+    <!-- 新页面 3：主题世界 × 工蚁装扮全屏工坊 -->
+    <main id="screen-atelier" class="screen screen-atelier" hidden>
+      <section class="atelier-stage-card">
+        <canvas id="atelier-preview-canvas" class="atelier-preview-canvas" width="360" height="146"></canvas>
+      </section>
+      <section class="atelier-block">
+        <h3 class="atelier-block-title">✨ 主题风格</h3>
+        <div id="atelier-theme-list" class="theme-list theme-grid-2col"></div>
+      </section>
+      <section class="atelier-block">
+        <h3 class="atelier-block-title">🧱 方块材质（可混搭）</h3>
+        <div id="atelier-block-list" class="block-style-grid"></div>
+      </section>
+      <section class="atelier-block">
+        <h3 class="atelier-block-title">🎧 音效与震动（点击试听）</h3>
+        <div id="atelier-sound-list" class="theme-list"></div>
+        <button id="btn-atelier-vibrate" class="hard-mode-toggle atelier-toggle" type="button">
+          <span>📳 震动与抖屏特效</span>
+          <span id="atelier-vibrate-tag" class="mode-sub-tag">默认关闭</span>
+        </button>
+      </section>
+      <section class="atelier-block">
+        <h3 class="atelier-block-title">🐜 工蚁装扮（<span id="atelier-stars-badge">0 ★</span>）</h3>
+        <div id="skin-list" class="skin-list"></div>
+      </section>
+    </main>
+
+    <!-- 底部 5-Tab 极简糖果双色图标 + 顶部彩条导航栏 -->
+    <nav id="bottom-nav" class="bottom-nav" aria-label="主导航">
+      <button type="button" class="bnav-btn is-active" data-nav-screen="game">
+        <span class="bnav-icon" aria-hidden="true">
+          <svg class="bnav-svg" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="4" width="16" height="12.5" rx="3.5" fill="currentColor"></rect>
+            <rect x="6.5" y="6.5" width="11" height="7.5" rx="1.6" fill="#ffffff"></rect>
+            <path d="M9.6 11.6L12 8.7l2.4 2.9H9.6z" fill="currentColor" fill-opacity="0.85"></path>
+            <circle cx="14.6" cy="8.4" r="1.1" fill="currentColor" fill-opacity="0.55"></circle>
+            <path d="M9 16.5l-2 4M15 16.5l2 4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"></path>
+          </svg>
+        </span>
+        <span class="bnav-label">搬画</span>
+      </button>
+      <button type="button" class="bnav-btn" data-nav-screen="home">
+        <span class="bnav-icon" aria-hidden="true">
+          <svg class="bnav-svg" viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="4" width="7.5" height="7.5" rx="2.4" fill="currentColor"></rect>
+            <rect x="13" y="4" width="7.5" height="7.5" rx="2.4" fill="currentColor" fill-opacity="0.48"></rect>
+            <rect x="3.5" y="13.5" width="7.5" height="7.5" rx="2.4" fill="currentColor" fill-opacity="0.7"></rect>
+            <path d="M16.75 13.4l1.1 2.2 2.45.35-1.78 1.72.42 2.43-2.19-1.15-2.19 1.15.42-2.43-1.78-1.72 2.45-.35z" fill="currentColor"></path>
+          </svg>
+        </span>
+        <span class="bnav-label">关卡</span>
+      </button>
+      <button type="button" class="bnav-btn" data-nav-screen="studio">
+        <span class="bnav-icon" aria-hidden="true">
+          <svg class="bnav-svg" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3.2a8.8 8.8 0 1 0 0 17.6h1.3a2.3 2.3 0 0 0 1.6-3.9 1.6 1.6 0 0 1 1.1-2.7h1.7a3.9 3.9 0 0 0 3.8-4.7A7.9 7.9 0 0 0 12 3.2z" fill="currentColor"></path>
+            <circle cx="8" cy="10.2" r="1.5" fill="#ffffff"></circle>
+            <circle cx="11.8" cy="7.6" r="1.5" fill="#ffffff"></circle>
+            <circle cx="15.8" cy="9.6" r="1.5" fill="#ffffff"></circle>
+            <circle cx="9.8" cy="15" r="1.8" fill="#ffffff" fill-opacity="0.88"></circle>
+          </svg>
+        </span>
+        <span class="bnav-label">创作</span>
+      </button>
+      <button type="button" class="bnav-btn" data-nav-screen="gallery">
+        <span class="bnav-icon" aria-hidden="true">
+          <svg class="bnav-svg" viewBox="0 0 24 24" fill="none">
+            <path d="M3.2 11.4l8-6.8a1.2 1.2 0 0 1 1.6 0l8 6.8a1.1 1.1 0 0 1-.7 1.9H3.9a1.1 1.1 0 0 1-.7-1.9z" fill="currentColor"></path>
+            <path d="M5.5 12.2h13v6.8a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-6.8z" fill="currentColor" fill-opacity="0.34"></path>
+            <path d="M9.7 21v-4.8a2.3 2.3 0 0 1 4.6 0V21H9.7z" fill="currentColor"></path>
+          </svg>
+        </span>
+        <span class="bnav-label">藏馆</span>
+      </button>
+      <button type="button" class="bnav-btn" data-nav-screen="atelier">
+        <span class="bnav-icon" aria-hidden="true">
+          <svg class="bnav-svg" viewBox="0 0 24 24" fill="none">
+            <path d="M10.8 3.2l2 5.4 5.4 2-5.4 2-2 5.4-2-5.4-5.4-2 5.4-2z" fill="currentColor"></path>
+            <path d="M18.2 14.5l1.1 2.7 2.7 1.1-2.7 1.1-1.1 2.7-1.1-2.7-2.7-1.1 2.7-1.1z" fill="currentColor" fill-opacity="0.58"></path>
+            <circle cx="17.8" cy="6.2" r="1.4" fill="currentColor" fill-opacity="0.45"></circle>
+          </svg>
+        </span>
+        <span class="bnav-label">装扮</span>
+      </button>
+    </nav>
+
+    <!-- 弹窗：过关 / 失败 / 排行榜 -->
     <div id="modal-backdrop" class="modal-backdrop" hidden>
-      <div id="modal-card" class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div id="modal-stars" class="modal-stars" hidden>★★★</div>
         <h3 id="modal-title" class="modal-title">搬画完成！</h3>
         <p id="modal-desc" class="modal-desc"></p>
@@ -139,8 +270,9 @@
         </div>
         <div id="modal-rank-wrap" class="modal-rank-wrap" hidden>
           <div id="rank-board-tabs" class="rank-tabs">
-            <button type="button" class="rank-tab is-active" data-rank-board="1">⭐ 累计集星榜</button>
-            <button type="button" class="rank-tab" data-rank-board="2">♾️ 无尽挑战榜</button>
+            <button type="button" class="rank-tab is-active" data-rank-board="1">⭐ 集星榜</button>
+            <button type="button" class="rank-tab" data-rank-board="2">♾️ 无尽榜</button>
+            <button type="button" class="rank-tab" data-rank-board="3">📅 连签榜</button>
           </div>
           <div id="rank-period-tabs" class="rank-period-tabs">
             <button type="button" class="rank-period-btn is-active" data-rank-period="all">总榜</button>
